@@ -51,8 +51,8 @@ const Contact = () => {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
+                    required />
+
                 </div>
                 <div className="form-field">
                   <Label htmlFor="contact-email">Email Address *</Label>
@@ -62,8 +62,8 @@ const Contact = () => {
                     placeholder="john@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
+                    required />
+
                 </div>
                 <div className="form-field">
                   <Label htmlFor="contact-phone">Phone Number</Label>
@@ -72,8 +72,8 @@ const Contact = () => {
                     type="tel"
                     placeholder="+91 98765 43210"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+
                 </div>
                 <div className="form-field">
                   <Label htmlFor="contact-message">Your Message *</Label>
@@ -83,8 +83,8 @@ const Contact = () => {
                     rows={5}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    required
-                  />
+                    required />
+
                 </div>
                 <Button type="submit" className="w-full cta-primary">
                   Send Message
@@ -104,7 +104,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="contact-info-title">Email</h4>
-                    <p className="contact-info-text">hello@purpleasterstudio.com</p>
+                    <p className="contact-info-text">purpleasterstudiox@gmail.com</p>
                   </div>
                 </div>
                 <div className="contact-info-item">
@@ -113,7 +113,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="contact-info-title">Phone</h4>
-                    <p className="contact-info-text">+91 98765 43210</p>
+                    <p className="contact-info-text">+91 9689827870 , +91 7058046368</p>
                   </div>
                 </div>
                 <div className="contact-info-item">
@@ -122,7 +122,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="contact-info-title">Location</h4>
-                    <p className="contact-info-text">Mumbai, Maharashtra, India</p>
+                    <p className="contact-info-text">Pune & Mumbai , Maharashtra, India</p>
                   </div>
                 </div>
               </CardContent>
@@ -140,8 +140,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default Contact;
