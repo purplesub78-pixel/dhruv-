@@ -3,7 +3,10 @@ import "./App.css";
 import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
+import HireOptions from "./components/HireOptions";
 import Services from "./components/Services";
+import InfluencerMarketing from "./components/InfluencerMarketing";
+import ModelAgency from "./components/ModelAgency";
 import ProjectInquiry from "./components/ProjectInquiry";
 import Portfolio from "./components/Portfolio";
 import About from "./components/About";
@@ -15,7 +18,10 @@ import {
   projectGoals, 
   platforms, 
   timelines, 
-  budgetRanges 
+  budgetRanges,
+  hireOptions,
+  influencerServices,
+  models
 } from "./mock";
 
 function App() {
