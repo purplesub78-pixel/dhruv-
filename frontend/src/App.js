@@ -1,52 +1,96 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { useRef } from "react";
+import "./App.css";
+import { Toaster } from "./components/ui/sonner";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import Services from "./components/Services";
+import ProjectInquiry from "./components/ProjectInquiry";
+import Portfolio from "./components/Portfolio";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+import { 
+  services, 
+  portfolioVideos, 
+  projectGoals, 
+  platforms, 
+  timelines, 
+  budgetRanges 
+} from "./mock";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+function App() {
+  const heroRef = useRef(null);
+  const servicesRef = useRef(null);
+  const inquiryRef = useRef(null);
+  const portfolioRef = useRef(null);
+  const aboutRef = useRef(null);
+  const contactRef = useRef(null);
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+  const scrollToSection = (target) => {
+    const refs = {
+      home: heroRef,
+      services: servicesRef,
+      inquiry: inquiryRef,
+      portfolio: portfolioRef,
+      about: aboutRef,
+      contact: contactRef
+    };
+
+    const ref = refs[target];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const handleServiceClick = (service) => {
+    console.log('Service clicked:', service);
+    scrollToSection('inquiry');
+  };
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Header onNavigate={scrollToSection} />
+      
+      <main>
+        <div ref={heroRef}>
+          <Hero 
+            onGetQuote={() => scrollToSection('inquiry')}
+            onViewWork={() => scrollToSection('portfolio')}
+          />
+        </div>
+        
+        <div ref={servicesRef}>
+          <Services 
+            services={services}
+            onServiceClick={handleServiceClick}
+          />
+        </div>
+        
+        <div ref={inquiryRef}>
+          <ProjectInquiry
+            services={services}
+            projectGoals={projectGoals}
+            platforms={platforms}
+            timelines={timelines}
+            budgetRanges={budgetRanges}
+          />
+        </div>
+        
+        <div ref={portfolioRef}>
+          <Portfolio videos={portfolioVideos} />
+        </div>
+        
+        <div ref={aboutRef}>
+          <About />
+        </div>
+        
+        <div ref={contactRef}>
+          <Contact />
+        </div>
+      </main>
+      
+      <Footer />
+      <Toaster />
     </div>
   );
 }
