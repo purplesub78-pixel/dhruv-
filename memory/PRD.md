@@ -25,7 +25,15 @@ The site should be better than kweenmedia.in with the same core features.
 - Cinematic design with purple, black, white color scheme
 - Smooth animations and premium feel
 
-### 2. Services Section
+### 2. Hire Options Section (NEW)
+- 3 large clickable cards for:
+  - Hire Video Production (Purple)
+  - Hire Influencers (Pink)
+  - Hire Models (Amber/Orange)
+- Each card shows services list and CTA button
+- Navigates to respective section on click
+
+### 3. Services Section
 - 8 clickable service cards:
   - Brand / Promo Video
   - Event Coverage (Concert, Conference)
@@ -36,7 +44,28 @@ The site should be better than kweenmedia.in with the same core features.
   - Animation / Motion Graphics
   - Corporate Video
 
-### 3. Project Inquiry Form
+### 4. Influencer Marketing Section (NEW)
+- Title and description about connecting brands with creators
+- 4 service cards:
+  - Influencer Campaign Planning
+  - Brand Collaborations
+  - Social Media Promotions
+  - Content Creation with Influencers
+- Stats display (2000+ Influencers, 50M+ Reach, 300+ Campaigns)
+- "Find Influencers" CTA button
+
+### 5. Model Agency Section (NEW)
+- Title and description about professional models
+- 8 model cards with:
+  - Professional photos
+  - Name
+  - Category (Fashion, Commercial, Music Videos, Brand Shoots)
+  - Height and Experience
+- Filter by category
+- Click to view model profile in modal
+- "Book a Model" CTA button
+
+### 6. Project Inquiry Form
 - Multi-step form (6 steps):
   1. Select video services (multi-select)
   2. Select project goal
@@ -46,23 +75,23 @@ The site should be better than kweenmedia.in with the same core features.
   6. Project details + contact info
 - Submit functionality
 
-### 4. Portfolio
+### 7. Portfolio
 - Video gallery with thumbnails
 - Filter by service type
 - Click to preview video and description
 - Modal popup for video playback
 
-### 5. About Section
+### 8. About Section
 - Studio description
 - Focus on storytelling and visual quality
 - Stats display (500+ projects, 200+ clients, 50M+ views, 15+ awards)
 
-### 6. Contact Section
+### 9. Contact Section
 - Contact form with validation
 - Contact information display
 - "Let's Work Together" CTA
 
-### 7. Header & Footer
+### 10. Header & Footer
 - Fixed header with smooth navigation
 - Mobile-responsive menu
 - Footer with social links and copyright
