@@ -164,6 +164,9 @@ The site should be better than kweenmedia.in with the same core features.
 // Services: 8 service objects with id, title, description, icon, color
 // Portfolio Videos: 9 video objects with id, title, description, category, thumbnail, videoUrl, client, duration
 // Form Options: projectGoals, platforms, timelines, budgetRanges
+// Hire Options: 3 option objects with id, title, icon, services, color, route
+// Influencer Services: 4 service objects with id, title, description, icon
+// Models: 8 model objects with id, name, category, image, experience, height
 ```
 
 ## Next Tasks
