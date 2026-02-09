@@ -211,3 +211,138 @@ export const testimonials = [
     rating: 5
   }
 ];
+
+export const influencerServices = [
+  {
+    id: 1,
+    title: "Influencer Campaign Planning",
+    description: "Strategic campaign planning tailored to your brand goals with data-driven influencer selection.",
+    icon: "Target"
+  },
+  {
+    id: 2,
+    title: "Brand Collaborations",
+    description: "Connect with authentic creators who align with your brand values and audience.",
+    icon: "Handshake"
+  },
+  {
+    id: 3,
+    title: "Social Media Promotions",
+    description: "Amplify your reach across Instagram, YouTube, TikTok, and emerging platforms.",
+    icon: "Megaphone"
+  },
+  {
+    id: 4,
+    title: "Content Creation with Influencers",
+    description: "Professional content production featuring top creators in your niche.",
+    icon: "Video"
+  }
+];
+
+export const models = [
+  {
+    id: 1,
+    name: "Aisha Kapoor",
+    category: "Fashion",
+    image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80",
+    experience: "5+ years",
+    height: "5'9\""
+  },
+  {
+    id: 2,
+    name: "Rohan Malhotra",
+    category: "Commercial",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+    experience: "4+ years",
+    height: "6'1\""
+  },
+  {
+    id: 3,
+    name: "Priya Nair",
+    category: "Fashion",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80",
+    experience: "6+ years",
+    height: "5'8\""
+  },
+  {
+    id: 4,
+    name: "Arjun Singh",
+    category: "Music Videos",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80",
+    experience: "3+ years",
+    height: "6'0\""
+  },
+  {
+    id: 5,
+    name: "Zara Ahmed",
+    category: "Brand Shoots",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
+    experience: "7+ years",
+    height: "5'7\""
+  },
+  {
+    id: 6,
+    name: "Kabir Sharma",
+    category: "Fashion",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
+    experience: "5+ years",
+    height: "6'2\""
+  },
+  {
+    id: 7,
+    name: "Ananya Desai",
+    category: "Commercial",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
+    experience: "4+ years",
+    height: "5'6\""
+  },
+  {
+    id: 8,
+    name: "Vikram Reddy",
+    category: "Brand Shoots",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
+    experience: "6+ years",
+    height: "5'11\""
+  }
+];
+
+export const hireOptions = [
+  {
+    id: 1,
+    title: "Hire Video Production",
+    icon: "Film",
+    services: [
+      "Brand Films",
+      "Commercials",
+      "Events",
+      "Music Videos",
+      "Social Media Content"
+    ],
+    color: "#7C3AED",
+    route: "services"
+  },
+  {
+    id: 2,
+    title: "Hire Influencers",
+    icon: "Users",
+    services: [
+      "Instagram, YouTube, TikTok Creators",
+      "Brand Collaborations",
+      "Campaign Promotions"
+    ],
+    color: "#EC4899",
+    route: "influencers"
+  },
+  {
+    id: 3,
+    title: "Hire Models",
+    icon: "Star",
+    services: [
+      "Fashion Models",
+      "Commercial Models",
+      "Music Video & Brand Shoot Models"
+    ],
+    color: "#F59E0B",
+    route: "models"
+  }
+];
