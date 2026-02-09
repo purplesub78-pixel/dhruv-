@@ -26,7 +26,10 @@ import {
 
 function App() {
   const heroRef = useRef(null);
+  const hireOptionsRef = useRef(null);
   const servicesRef = useRef(null);
+  const influencersRef = useRef(null);
+  const modelsRef = useRef(null);
   const inquiryRef = useRef(null);
   const portfolioRef = useRef(null);
   const aboutRef = useRef(null);
@@ -35,7 +38,10 @@ function App() {
   const scrollToSection = (target) => {
     const refs = {
       home: heroRef,
+      hireOptions: hireOptionsRef,
       services: servicesRef,
+      influencers: influencersRef,
+      models: modelsRef,
       inquiry: inquiryRef,
       portfolio: portfolioRef,
       about: aboutRef,
@@ -53,6 +59,21 @@ function App() {
     scrollToSection('inquiry');
   };
 
+  const handleHireOptionClick = (route) => {
+    console.log('Hire option clicked:', route);
+    scrollToSection(route);
+  };
+
+  const handleFindInfluencers = () => {
+    console.log('Find influencers clicked');
+    scrollToSection('inquiry');
+  };
+
+  const handleBookModel = () => {
+    console.log('Book model clicked');
+    scrollToSection('inquiry');
+  };
+
   return (
     <div className="App">
       <Header onNavigate={scrollToSection} />
@@ -64,11 +85,32 @@ function App() {
             onViewWork={() => scrollToSection('portfolio')}
           />
         </div>
+
+        <div ref={hireOptionsRef}>
+          <HireOptions 
+            options={hireOptions}
+            onOptionClick={handleHireOptionClick}
+          />
+        </div>
         
         <div ref={servicesRef}>
           <Services 
             services={services}
             onServiceClick={handleServiceClick}
+          />
+        </div>
+
+        <div ref={influencersRef}>
+          <InfluencerMarketing 
+            services={influencerServices}
+            onFindInfluencers={handleFindInfluencers}
+          />
+        </div>
+
+        <div ref={modelsRef}>
+          <ModelAgency 
+            models={models}
+            onBookModel={handleBookModel}
           />
         </div>
         
