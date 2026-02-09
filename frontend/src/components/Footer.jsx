@@ -5,12 +5,12 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Instagram, label: 'Instagram', href: '#' },
-    { icon: Youtube, label: 'YouTube', href: '#' },
-    { icon: Twitter, label: 'Twitter', href: '#' },
-    { icon: Linkedin, label: 'LinkedIn', href: '#' },
-    { icon: Mail, label: 'Email', href: 'mailto:hello@purpleasterstudio.com' }
-  ];
+  { icon: Instagram, label: 'Instagram', href: '#' },
+  { icon: Youtube, label: 'YouTube', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: '#' },
+  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { icon: Mail, label: 'Email', href: 'mailto:hello@purpleasterstudio.com' }];
+
 
   return (
     <footer className="site-footer">
@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="footer-content">
           <div className="footer-brand">
             <h3 className="footer-logo">Purple Aster Studio</h3>
-            <p className="footer-tagline">Crafting Stories Through Motion</p>
+            <p className="footer-tagline">We Create You Grow</p>
           </div>
 
           <div className="footer-links">
@@ -44,7 +44,7 @@ const Footer = () => {
 
             <div className="footer-column">
               <h4 className="footer-heading">Connect</h4>
-              <div className="social-links">
+              <div className="https://www.instagram.com/purpleaster_studiox/">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
@@ -54,11 +54,11 @@ const Footer = () => {
                       className="social-link"
                       aria-label={social.label}
                       target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                      rel="noopener noreferrer">
+
                       <Icon className="h-5 w-5" />
-                    </a>
-                  );
+                    </a>);
+
                 })}
               </div>
             </div>
@@ -76,8 +76,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 };
 
 export default Footer;
