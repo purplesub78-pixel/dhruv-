@@ -33,11 +33,11 @@ const About = () => {
           </div>
           <div className="about-stats">
             <div className="stat-item">
-              <h3 className="stat-number">500+</h3>
+              <h3 className="stat-number">100+</h3>
               <p className="stat-label">Projects Completed</p>
             </div>
             <div className="stat-item">
-              <h3 className="stat-number">200+</h3>
+              <h3 className="stat-number">50+</h3>
               <p className="stat-label">Happy Clients</p>
             </div>
             <div className="stat-item">
@@ -45,14 +45,14 @@ const About = () => {
               <p className="stat-label">Views Generated</p>
             </div>
             <div className="stat-item">
-              <h3 className="stat-number">15+</h3>
+              <h3 className="stat-number">7+</h3>
               <p className="stat-label">Awards Won</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default About;
