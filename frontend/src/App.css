@@ -998,3 +998,371 @@ section:nth-child(even) {
     grid-template-columns: 1fr;
   }
 }
+
+/* Hire Options Section */
+.hire-options-section {
+  background: var(--color-white);
+  padding: 6rem 2rem;
+}
+
+.hire-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hire-option-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.hire-option-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.hire-option-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.hire-option-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 1.5rem;
+}
+
+.hire-option-services {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hire-option-service-item {
+  font-size: 0.95rem;
+  color: var(--color-grey);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+}
+
+.hire-option-service-item:last-child {
+  border-bottom: none;
+}
+
+.hire-option-button {
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.hire-option-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Influencer Marketing Section */
+.influencer-section {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  padding: 6rem 2rem;
+}
+
+.influencer-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.influencer-service-card {
+  background: var(--color-white);
+  border: 1px solid rgba(236, 72, 153, 0.1);
+  transition: all 0.3s ease;
+}
+
+.influencer-service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.influencer-service-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  margin-bottom: 1rem;
+}
+
+.influencer-service-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 0.5rem;
+}
+
+.influencer-service-description {
+  font-size: 0.95rem;
+  color: var(--color-grey);
+  line-height: 1.6;
+}
+
+.influencer-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(236, 72, 153, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.1);
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  color: #ec4899;
+  margin: 0 auto 1rem;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ec4899;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--color-grey);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.influencer-cta {
+  text-align: center;
+}
+
+/* Model Agency Section */
+.model-agency-section {
+  background: var(--color-white);
+  padding: 6rem 2rem;
+}
+
+.model-filters {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.model-card {
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.model-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(245, 158, 11, 0.2);
+}
+
+.model-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+}
+
+.model-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.model-card:hover .model-image {
+  transform: scale(1.1);
+}
+
+.model-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 10, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.model-card:hover .model-overlay {
+  opacity: 1;
+}
+
+.view-profile-button {
+  background: var(--color-white);
+  color: var(--color-black);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+}
+
+.view-profile-button:hover {
+  background: #f59e0b;
+  color: var(--color-white);
+}
+
+.model-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #f59e0b;
+  color: var(--color-white);
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.model-content {
+  padding: 1.5rem;
+}
+
+.model-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 0.75rem;
+}
+
+.model-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-grey);
+}
+
+.model-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.model-cta {
+  text-align: center;
+}
+
+/* Model Modal */
+.model-modal {
+  max-width: 700px;
+}
+
+.model-modal-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .model-modal-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.model-modal-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.model-modal-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.model-info-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.model-info-label {
+  font-size: 0.85rem;
+  color: var(--color-light-grey);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.model-info-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-black);
+}
+
+/* Responsive adjustments for new sections */
+@media (max-width: 768px) {
+  .hire-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .influencer-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .influencer-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .model-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .model-image-wrapper {
+    height: 300px;
+  }
+}
