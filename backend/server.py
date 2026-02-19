@@ -184,7 +184,10 @@ async def create_project(project_data: ProjectCreate, request: Request):
         # Log project creation
         logger.info(f"Project created: {project_id} by {user['email']}")
         
-        return {"success": True, "project_id": project_id, "project": project}
+        # Remove MongoDB's _id field before returning
+        project_response = {k: v for k, v in project.items() if k != '_id'}
+        
+        return {"success": True, "project_id": project_id, "project": project_response}
         
     except HTTPException:
         raise
