@@ -13,7 +13,8 @@ import uuid
 from models import (
     User, UserSession, Project, ProjectCreate, ProjectStatus,
     Payment, PaymentCreate, PaymentStatus,
-    Deliverable, ProjectUpdate, Feedback, UserRole
+    Deliverable, ProjectUpdate, Feedback, UserRole,
+    StatusCheck, StatusCheckCreate
 )
 from auth import (
     exchange_session_id, create_or_update_user, store_session,
