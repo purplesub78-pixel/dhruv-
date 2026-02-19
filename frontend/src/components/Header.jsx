@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 
-const Header = ({ onNavigate }) => {
+const Header = ({ onNavigate, currentPage }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Services', target: 'services' },
+    { label: 'Home', target: 'home' },
+    { label: 'About Us', target: 'aboutUs' },
+    { label: 'Services', target: 'servicesPage' },
     { label: 'Work', target: 'portfolio' },
-    { label: 'About', target: 'about' },
     { label: 'Contact', target: 'contact' }
   ];
 
@@ -20,7 +21,7 @@ const Header = ({ onNavigate }) => {
   return (
     <header className="site-header">
       <div className="header-container">
-        <div className="header-logo" onClick={() => onNavigate('home')}>
+        <div className="header-logo" onClick={() => handleNavClick('home')}>
           <span className="logo-text">Purple Aster Studio</span>
         </div>
 
@@ -30,7 +31,7 @@ const Header = ({ onNavigate }) => {
             <button
               key={item.target}
               onClick={() => handleNavClick(item.target)}
-              className="nav-link"
+              className={`nav-link ${currentPage === item.target ? 'active' : ''}`}
             >
               {item.label}
             </button>
