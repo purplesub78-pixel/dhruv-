@@ -333,6 +333,69 @@ async def update_project_status(project_id: str, request: Request):
         logger.error(f"Status update failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.patch("/projects/{project_id}/assign")
+async def assign_talent_to_project(project_id: str, request: Request):
+    """
+    Assign or unassign talents to a project (Admin only).
+    """
+    try:
+        user = await get_current_user(request)
+        await require_role(user, [UserRole.ADMIN.value])
+        
+        body = await request.json()
+        talent_ids = body.get("talent_ids", [])
+        
+        # Verify all talent_ids exist and are talents
+        for talent_id in talent_ids:
+            talent = await db.users.find_one({"user_id": talent_id}, {"_id": 0})
+            if not talent:
+                raise HTTPException(status_code=404, detail=f"Talent {talent_id} not found")
+            if talent.get("role") != UserRole.TALENT.value:
+                raise HTTPException(status_code=400, detail=f"User {talent_id} is not a talent")
+        
+        result = await db.projects.update_one(
+            {"project_id": project_id},
+            {"$set": {
+                "assigned_talents": talent_ids,
+                "updated_at": datetime.now(timezone.utc)
+            }}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        logger.info(f"Talents assigned to project {project_id}: {talent_ids}")
+        
+        return {"success": True, "message": "Talents assigned successfully", "assigned_talents": talent_ids}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Talent assignment failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/admin/talents")
+async def get_all_talents(request: Request):
+    """
+    Get all talent users (Admin only).
+    """
+    try:
+        user = await get_current_user(request)
+        await require_role(user, [UserRole.ADMIN.value])
+        
+        talents = await db.users.find(
+            {"role": UserRole.TALENT.value},
+            {"_id": 0}
+        ).to_list(500)
+        
+        return {"success": True, "talents": talents}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch talents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============================================================================
 # PAYMENT ENDPOINTS (RAZORPAY INTEGRATION)
 # ============================================================================
