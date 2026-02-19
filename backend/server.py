@@ -62,6 +62,26 @@ except Exception as e:
     logger.error(f"Failed to initialize Razorpay client: {str(e)}")
     razorpay_client = None
 
+# Cloudinary Configuration
+try:
+    cloudinary.config(
+        cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.environ.get("CLOUDINARY_API_KEY"),
+        api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+        secure=True
+    )
+    logger.info("Cloudinary configured successfully")
+except Exception as e:
+    logger.error(f"Failed to configure Cloudinary: {str(e)}")
+
+# Resend Email Configuration
+resend_api_key = os.environ.get("RESEND_API_KEY")
+if resend_api_key:
+    resend.api_key = resend_api_key
+    logger.info("Resend email service configured successfully")
+else:
+    logger.warning("Resend API key not configured - email notifications disabled")
+
 # Create the main app without a prefix
 app = FastAPI()
 
