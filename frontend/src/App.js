@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import HireOptions from "./components/HireOptions";
 import Services from "./components/Services";
+import ServicesPage from "./components/ServicesPage";
+import AboutUs from "./components/AboutUs";
 import InfluencerMarketing from "./components/InfluencerMarketing";
 import ModelAgency from "./components/ModelAgency";
 import ProjectInquiry from "./components/ProjectInquiry";
