@@ -3,16 +3,18 @@ import uuid
 import httpx
 from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
-
-# Database connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 # Emergent Auth Session Data URL
 EMERGENT_AUTH_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+
+# Database will be injected from server.py
+db = None
+
+def set_database(database):
+    """Set database instance from server.py"""
+    global db
+    db = database
 
 async def exchange_session_id(session_id: str) -> dict:
     """
