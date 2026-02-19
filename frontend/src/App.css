@@ -1366,3 +1366,12 @@ section:nth-child(even) {
     height: 300px;
   }
 }
+
+/* Navigation Active State */
+.nav-link.active {
+  color: var(--color-purple-light);
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
