@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import "./pages.css";
 import { Toaster } from "./components/ui/sonner";
@@ -15,6 +16,12 @@ import Portfolio from "./components/Portfolio";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Login from "./components/Login";
+import AuthCallback from "./components/AuthCallback";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./components/Dashboard";
+import ClientOnboarding from "./components/ClientOnboarding";
+import PaymentPage from "./components/PaymentPage";
 import { 
   services, 
   portfolioVideos, 
