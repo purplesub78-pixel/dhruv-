@@ -6,7 +6,7 @@ import { LogIn, Users, Star, Video } from 'lucide-react';
 const Login = () => {
   const handleLogin = (role) => {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    const redirectUrl = window.location.origin + '/dashboard';
+    const redirectUrl = window.location.origin + '/auth/callback';
     
     // Store selected role in sessionStorage for after auth
     sessionStorage.setItem('selected_role', role);
