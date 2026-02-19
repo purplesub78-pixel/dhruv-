@@ -16,6 +16,8 @@ const ClientOnboarding = ({ user }) => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [formData, setFormData] = useState({
     selectedServices: [],
     goal: '',
@@ -30,6 +32,79 @@ const ClientOnboarding = ({ user }) => {
   });
 
   const totalSteps = 6;
+
+  // Upload file to Cloudinary
+  const uploadToCloudinary = async (file) => {
+    try {
+      // Get signature from backend
+      const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
+      const sigResponse = await axios.get(
+        `${BACKEND_URL}/api/cloudinary/signature?resource_type=${resourceType}&folder=references`,
+        { withCredentials: true }
+      );
+      
+      const { signature, timestamp, cloud_name, api_key, folder } = sigResponse.data;
+      
+      // Upload to Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', api_key);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+      formData.append('folder', folder);
+      
+      const cloudinaryResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloud_name}/${resourceType}/upload`,
+        formData
+      );
+      
+      return {
+        url: cloudinaryResponse.data.secure_url,
+        publicId: cloudinaryResponse.data.public_id,
+        name: file.name,
+        type: resourceType
+      };
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  };
+  
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    // Validate file count
+    if (uploadedFiles.length + files.length > 5) {
+      toast.error('Maximum 5 files allowed');
+      return;
+    }
+    
+    // Validate file sizes (max 50MB each)
+    const invalidFiles = files.filter(f => f.size > 50 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      toast.error('Files must be under 50MB');
+      return;
+    }
+    
+    setUploadingFiles(true);
+    
+    try {
+      const uploadPromises = files.map(file => uploadToCloudinary(file));
+      const results = await Promise.all(uploadPromises);
+      
+      setUploadedFiles(prev => [...prev, ...results]);
+      toast.success(`${results.length} file(s) uploaded successfully`);
+    } catch (error) {
+      toast.error('Failed to upload file(s). Please try again.');
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+  
+  const removeFile = (index) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const services = [
     "Brand / Promo Video",
