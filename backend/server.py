@@ -17,6 +17,7 @@ from models import (
     Deliverable, ProjectUpdate, Feedback, UserRole,
     StatusCheck, StatusCheckCreate
 )
+import auth
 from auth import (
     exchange_session_id, create_or_update_user, store_session,
     verify_session_token, get_current_user, delete_session, require_role
@@ -30,6 +31,9 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Set database for auth module
+auth.set_database(db)
 
 # Create the main app without a prefix
 app = FastAPI()
