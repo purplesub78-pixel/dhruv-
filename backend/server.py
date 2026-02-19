@@ -7,6 +7,7 @@ import os
 import logging
 from pathlib import Path
 from datetime import datetime, timezone
+from typing import List
 import uuid
 
 # Import models and auth helpers
