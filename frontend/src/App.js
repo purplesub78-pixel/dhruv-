@@ -35,6 +35,56 @@ import {
 } from "./mock";
 
 function App() {
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <Toaster />
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/services" element={<ServicesPageRoute />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<AuthCallback />} />
+          
+          {/* Protected Routes */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/onboarding" 
+            element={
+              <ProtectedRoute>
+                <ClientOnboarding />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/payment/:projectId" 
+            element={
+              <ProtectedRoute>
+                <PaymentPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+// HomePage Component with all sections
+const HomePage = () => {
   const [currentPage, setCurrentPage] = useState('home');
   
   const heroRef = useRef(null);
@@ -48,24 +98,6 @@ function App() {
   const contactRef = useRef(null);
 
   const scrollToSection = (target) => {
-    // Handle page navigation
-    if (target === 'aboutUs' || target === 'servicesPage') {
-      setCurrentPage(target);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    // Navigate back to home if needed
-    if (currentPage !== 'home') {
-      setCurrentPage('home');
-      setTimeout(() => scrollToHomeSection(target), 100);
-      return;
-    }
-
-    scrollToHomeSection(target);
-  };
-
-  const scrollToHomeSection = (target) => {
     const refs = {
       home: heroRef,
       hireOptions: hireOptionsRef,
@@ -85,118 +117,115 @@ function App() {
   };
 
   const handleServiceClick = (service) => {
-    console.log('Service clicked:', service);
-    if (currentPage !== 'home') {
-      setCurrentPage('home');
-      setTimeout(() => scrollToSection('inquiry'), 100);
-    } else {
-      scrollToSection('inquiry');
-    }
+    scrollToSection('inquiry');
   };
 
   const handleHireOptionClick = (route) => {
-    console.log('Hire option clicked:', route);
     scrollToSection(route);
   };
 
   const handleFindInfluencers = () => {
-    console.log('Find influencers clicked');
     scrollToSection('inquiry');
   };
 
   const handleBookModel = () => {
-    console.log('Book model clicked');
     scrollToSection('inquiry');
   };
 
   const handleGetQuote = () => {
-    if (currentPage !== 'home') {
-      setCurrentPage('home');
-      setTimeout(() => scrollToSection('inquiry'), 100);
-    } else {
-      scrollToSection('inquiry');
-    }
+    scrollToSection('inquiry');
   };
 
   return (
-    <div className="App">
+    <>
       <Header onNavigate={scrollToSection} currentPage={currentPage} />
       
       <main>
-        {currentPage === 'home' && (
-          <>
-            <div ref={heroRef}>
-              <Hero 
-                onGetQuote={handleGetQuote}
-                onViewWork={() => scrollToSection('portfolio')}
-              />
-            </div>
+        <div ref={heroRef}>
+          <Hero 
+            onGetQuote={handleGetQuote}
+            onViewWork={() => scrollToSection('portfolio')}
+          />
+        </div>
 
-            <div ref={hireOptionsRef}>
-              <HireOptions 
-                options={hireOptions}
-                onOptionClick={handleHireOptionClick}
-              />
-            </div>
-            
-            <div ref={servicesRef}>
-              <Services 
-                services={services}
-                onServiceClick={handleServiceClick}
-              />
-            </div>
+        <div ref={hireOptionsRef}>
+          <HireOptions 
+            options={hireOptions}
+            onOptionClick={handleHireOptionClick}
+          />
+        </div>
+        
+        <div ref={servicesRef}>
+          <Services 
+            services={services}
+            onServiceClick={handleServiceClick}
+          />
+        </div>
 
-            <div ref={influencersRef}>
-              <InfluencerMarketing 
-                services={influencerServices}
-                onFindInfluencers={handleFindInfluencers}
-              />
-            </div>
+        <div ref={influencersRef}>
+          <InfluencerMarketing 
+            services={influencerServices}
+            onFindInfluencers={handleFindInfluencers}
+          />
+        </div>
 
-            <div ref={modelsRef}>
-              <ModelAgency 
-                models={models}
-                onBookModel={handleBookModel}
-              />
-            </div>
-            
-            <div ref={inquiryRef}>
-              <ProjectInquiry
-                services={services}
-                projectGoals={projectGoals}
-                platforms={platforms}
-                timelines={timelines}
-                budgetRanges={budgetRanges}
-              />
-            </div>
-            
-            <div ref={portfolioRef}>
-              <Portfolio videos={portfolioVideos} />
-            </div>
-            
-            <div ref={aboutRef}>
-              <About />
-            </div>
-            
-            <div ref={contactRef}>
-              <Contact />
-            </div>
-          </>
-        )}
-
-        {currentPage === 'aboutUs' && (
-          <AboutUs />
-        )}
-
-        {currentPage === 'servicesPage' && (
-          <ServicesPage onGetQuote={handleGetQuote} />
-        )}
+        <div ref={modelsRef}>
+          <ModelAgency 
+            models={models}
+            onBookModel={handleBookModel}
+          />
+        </div>
+        
+        <div ref={inquiryRef}>
+          <ProjectInquiry
+            services={services}
+            projectGoals={projectGoals}
+            platforms={platforms}
+            timelines={timelines}
+            budgetRanges={budgetRanges}
+          />
+        </div>
+        
+        <div ref={portfolioRef}>
+          <Portfolio videos={portfolioVideos} />
+        </div>
+        
+        <div ref={aboutRef}>
+          <About />
+        </div>
+        
+        <div ref={contactRef}>
+          <Contact />
+        </div>
       </main>
       
       <Footer />
-      <Toaster />
-    </div>
+    </>
   );
-}
+};
+
+// About Us Page Route
+const AboutUsPage = () => {
+  return (
+    <>
+      <AboutUs />
+      <Footer />
+    </>
+  );
+};
+
+// Services Page Route
+const ServicesPageRoute = () => {
+  const handleGetQuote = () => {
+    window.location.href = '/#inquiry';
+  };
+
+  return (
+    <>
+      <ServicesPage onGetQuote={handleGetQuote} />
+      <Footer />
+    </>
+  );
+};
 
 export default App;
