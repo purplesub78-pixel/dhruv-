@@ -758,8 +758,183 @@ async def get_all_users(request: Request):
         logger.error(f"Failed to fetch users: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+# ============================================================================
+# CLOUDINARY FILE UPLOAD ENDPOINTS
+# ============================================================================
+
+@api_router.get("/cloudinary/signature")
+async def generate_cloudinary_signature(
+    request: Request,
+    resource_type: str = Query("image", enum=["image", "video"]),
+    folder: str = Query("uploads")
+):
+    """
+    Generate a signed upload signature for Cloudinary.
+    The frontend uses this to upload directly to Cloudinary.
+    """
+    try:
+        user = await get_current_user(request)
+        
+        # Validate folder path (allow user-specific and project folders)
+        allowed_prefixes = ("uploads/", "projects/", "users/", "references/")
+        if not folder.startswith(allowed_prefixes):
+            folder = f"uploads/{folder}"
+        
+        timestamp = int(time.time())
+        params = {
+            "timestamp": timestamp,
+            "folder": folder,
+            "resource_type": resource_type
+        }
+        
+        signature = cloudinary.utils.api_sign_request(
+            params,
+            os.environ.get("CLOUDINARY_API_SECRET")
+        )
+        
+        logger.info(f"Generated Cloudinary signature for user {user['email']}, folder: {folder}")
+        
+        return {
+            "signature": signature,
+            "timestamp": timestamp,
+            "cloud_name": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+            "api_key": os.environ.get("CLOUDINARY_API_KEY"),
+            "folder": folder,
+            "resource_type": resource_type
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to generate Cloudinary signature: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# EMAIL NOTIFICATION FUNCTIONS
+# ============================================================================
+
+async def send_email_notification(to_email: str, subject: str, html_content: str):
+    """
+    Send email notification using Resend.
+    Non-blocking async function.
+    """
+    if not resend_api_key:
+        logger.warning(f"Email not sent (no API key): {subject} to {to_email}")
+        return None
+    
+    try:
+        params = {
+            "from": "Purple Aster Studio <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content
+        }
+        
+        # Run sync SDK in thread to keep FastAPI non-blocking
+        email = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Email sent successfully to {to_email}: {subject}")
+        return email
+        
+    except Exception as e:
+        logger.error(f"Failed to send email to {to_email}: {str(e)}")
+        return None
+
+def get_project_confirmation_email(project_data: dict) -> str:
+    """Generate HTML email for project confirmation."""
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+            .header {{ background: linear-gradient(135deg, #7C3AED, #6D28D9); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+            .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .highlight {{ background: white; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #7C3AED; }}
+            .footer {{ text-align: center; padding: 20px; color: #666; font-size: 14px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Purple Aster Studio</h1>
+                <p>Your Project Has Been Received!</p>
+            </div>
+            <div class="content">
+                <p>Hello {project_data.get('client_name', 'Valued Client')},</p>
+                <p>Thank you for submitting your project with Purple Aster Studio. We're excited to bring your vision to life!</p>
+                
+                <div class="highlight">
+                    <h3>Project Details:</h3>
+                    <p><strong>Services:</strong> {', '.join(project_data.get('services', []))}</p>
+                    <p><strong>Goal:</strong> {project_data.get('goal', 'N/A')}</p>
+                    <p><strong>Platform:</strong> {project_data.get('platform', 'N/A')}</p>
+                    <p><strong>Timeline:</strong> {project_data.get('timeline', 'N/A')}</p>
+                    <p><strong>Budget:</strong> {project_data.get('budget', 'N/A')}</p>
+                </div>
+                
+                <p>Our team will review your project and get back to you within 24-48 hours.</p>
+                <p>If you have any questions, feel free to reply to this email.</p>
+                
+                <p>Best regards,<br><strong>Purple Aster Studio Team</strong></p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2025 Purple Aster Studio. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+def get_payment_confirmation_email(payment_data: dict, project_data: dict) -> str:
+    """Generate HTML email for payment confirmation."""
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+            .header {{ background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+            .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .highlight {{ background: white; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10B981; }}
+            .amount {{ font-size: 32px; color: #10B981; font-weight: bold; }}
+            .footer {{ text-align: center; padding: 20px; color: #666; font-size: 14px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Payment Confirmed!</h1>
+                <p>Thank you for your payment</p>
+            </div>
+            <div class="content">
+                <p>Hello {project_data.get('client_name', 'Valued Client')},</p>
+                <p>We have successfully received your payment. Here are the details:</p>
+                
+                <div class="highlight">
+                    <h3>Payment Details:</h3>
+                    <p class="amount">₹{payment_data.get('amount', 0):,.2f}</p>
+                    <p><strong>Payment ID:</strong> {payment_data.get('payment_id', 'N/A')}</p>
+                    <p><strong>Transaction ID:</strong> {payment_data.get('transaction_id', 'N/A')}</p>
+                    <p><strong>Project:</strong> {', '.join(project_data.get('services', []))}</p>
+                    <p><strong>Date:</strong> {datetime.now(timezone.utc).strftime('%B %d, %Y at %I:%M %p UTC')}</p>
+                </div>
+                
+                <p>Your project is now active and our team will begin working on it shortly.</p>
+                <p>You can track your project progress in your dashboard.</p>
+                
+                <p>Best regards,<br><strong>Purple Aster Studio Team</strong></p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2025 Purple Aster Studio. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
