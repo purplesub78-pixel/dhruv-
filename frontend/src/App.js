@@ -48,7 +48,7 @@ function App() {
           
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<AuthCallback />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           
           {/* Protected Routes */}
           <Route 
