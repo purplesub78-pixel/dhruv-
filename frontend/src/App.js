@@ -27,6 +27,8 @@ import {
 } from "./mock";
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+  
   const heroRef = useRef(null);
   const hireOptionsRef = useRef(null);
   const servicesRef = useRef(null);
@@ -38,6 +40,24 @@ function App() {
   const contactRef = useRef(null);
 
   const scrollToSection = (target) => {
+    // Handle page navigation
+    if (target === 'aboutUs' || target === 'servicesPage') {
+      setCurrentPage(target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Navigate back to home if needed
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => scrollToHomeSection(target), 100);
+      return;
+    }
+
+    scrollToHomeSection(target);
+  };
+
+  const scrollToHomeSection = (target) => {
     const refs = {
       home: heroRef,
       hireOptions: hireOptionsRef,
@@ -58,7 +78,12 @@ function App() {
 
   const handleServiceClick = (service) => {
     console.log('Service clicked:', service);
-    scrollToSection('inquiry');
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => scrollToSection('inquiry'), 100);
+    } else {
+      scrollToSection('inquiry');
+    }
   };
 
   const handleHireOptionClick = (route) => {
@@ -76,67 +101,88 @@ function App() {
     scrollToSection('inquiry');
   };
 
+  const handleGetQuote = () => {
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => scrollToSection('inquiry'), 100);
+    } else {
+      scrollToSection('inquiry');
+    }
+  };
+
   return (
     <div className="App">
-      <Header onNavigate={scrollToSection} />
+      <Header onNavigate={scrollToSection} currentPage={currentPage} />
       
       <main>
-        <div ref={heroRef}>
-          <Hero 
-            onGetQuote={() => scrollToSection('inquiry')}
-            onViewWork={() => scrollToSection('portfolio')}
-          />
-        </div>
+        {currentPage === 'home' && (
+          <>
+            <div ref={heroRef}>
+              <Hero 
+                onGetQuote={handleGetQuote}
+                onViewWork={() => scrollToSection('portfolio')}
+              />
+            </div>
 
-        <div ref={hireOptionsRef}>
-          <HireOptions 
-            options={hireOptions}
-            onOptionClick={handleHireOptionClick}
-          />
-        </div>
-        
-        <div ref={servicesRef}>
-          <Services 
-            services={services}
-            onServiceClick={handleServiceClick}
-          />
-        </div>
+            <div ref={hireOptionsRef}>
+              <HireOptions 
+                options={hireOptions}
+                onOptionClick={handleHireOptionClick}
+              />
+            </div>
+            
+            <div ref={servicesRef}>
+              <Services 
+                services={services}
+                onServiceClick={handleServiceClick}
+              />
+            </div>
 
-        <div ref={influencersRef}>
-          <InfluencerMarketing 
-            services={influencerServices}
-            onFindInfluencers={handleFindInfluencers}
-          />
-        </div>
+            <div ref={influencersRef}>
+              <InfluencerMarketing 
+                services={influencerServices}
+                onFindInfluencers={handleFindInfluencers}
+              />
+            </div>
 
-        <div ref={modelsRef}>
-          <ModelAgency 
-            models={models}
-            onBookModel={handleBookModel}
-          />
-        </div>
-        
-        <div ref={inquiryRef}>
-          <ProjectInquiry
-            services={services}
-            projectGoals={projectGoals}
-            platforms={platforms}
-            timelines={timelines}
-            budgetRanges={budgetRanges}
-          />
-        </div>
-        
-        <div ref={portfolioRef}>
-          <Portfolio videos={portfolioVideos} />
-        </div>
-        
-        <div ref={aboutRef}>
-          <About />
-        </div>
-        
-        <div ref={contactRef}>
-          <Contact />
-        </div>
+            <div ref={modelsRef}>
+              <ModelAgency 
+                models={models}
+                onBookModel={handleBookModel}
+              />
+            </div>
+            
+            <div ref={inquiryRef}>
+              <ProjectInquiry
+                services={services}
+                projectGoals={projectGoals}
+                platforms={platforms}
+                timelines={timelines}
+                budgetRanges={budgetRanges}
+              />
+            </div>
+            
+            <div ref={portfolioRef}>
+              <Portfolio videos={portfolioVideos} />
+            </div>
+            
+            <div ref={aboutRef}>
+              <About />
+            </div>
+            
+            <div ref={contactRef}>
+              <Contact />
+            </div>
+          </>
+        )}
+
+        {currentPage === 'aboutUs' && (
+          <AboutUs />
+        )}
+
+        {currentPage === 'servicesPage' && (
+          <ServicesPage onGetQuote={handleGetQuote} />
+        )}
       </main>
       
       <Footer />
