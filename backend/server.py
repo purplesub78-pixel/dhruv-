@@ -603,11 +603,12 @@ async def get_status_checks():
 app.include_router(api_router)
 
 # CORS Configuration
-cors_origins = os.environ.get('CORS_ORIGINS', '*')
+cors_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:3000')
 if cors_origins != '*':
     cors_origins = [origin.strip() for origin in cors_origins.split(',')]
 else:
-    cors_origins = ['*']
+    # When using credentials, we cannot use wildcard. Default to localhost for development.
+    cors_origins = ['http://localhost:3000']
 
 app.add_middleware(
     CORSMiddleware,
