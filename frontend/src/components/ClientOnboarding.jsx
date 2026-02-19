@@ -201,7 +201,8 @@ const ClientOnboarding = ({ user }) => {
           details: formData.details,
           name: formData.name,
           email: formData.email,
-          phone: formData.phone
+          phone: formData.phone,
+          reference_files: uploadedFiles.map(f => f.url)
         },
         {
           withCredentials: true
