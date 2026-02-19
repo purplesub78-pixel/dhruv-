@@ -120,3 +120,12 @@ class Feedback(BaseModel):
     message: str
     created_by: str  # user_id
     created_at: datetime
+
+# Status Check Models (for health monitoring)
+class StatusCheck(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    client_name: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now())
+
+class StatusCheckCreate(BaseModel):
+    client_name: str
