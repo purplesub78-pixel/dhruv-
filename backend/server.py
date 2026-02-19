@@ -552,7 +552,7 @@ async def create_payment(payment_data: PaymentCreate, request: Request):
     Legacy endpoint - redirects to create_payment_order.
     Kept for backward compatibility.
     """
-    user = await get_current_user(request)
+    await get_current_user(request)  # Verify authentication
     
     # Create order using new endpoint
     return await create_payment_order(request)
