@@ -45,6 +45,7 @@ class ProjectCreate(BaseModel):
     name: str
     email: str
     phone: Optional[str] = None
+    reference_files: Optional[List[str]] = []  # Cloudinary URLs for uploaded references
 
 class Project(BaseModel):
     project_id: str
