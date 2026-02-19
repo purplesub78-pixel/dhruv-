@@ -301,20 +301,24 @@ async def update_project_status(project_id: str, request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================
-# PAYMENT ENDPOINTS (MOCKED FOR NOW)
+# PAYMENT ENDPOINTS (RAZORPAY INTEGRATION)
 # ============================================================================
 
-@api_router.post("/payments")
-async def create_payment(payment_data: PaymentCreate, request: Request):
+@api_router.post("/payments/create-order")
+async def create_payment_order(request: Request):
     """
-    Create a payment record (MOCKED - add real PayPal integration later).
+    Create Razorpay order for payment.
     """
     try:
         user = await get_current_user(request)
+        body = await request.json()
+        
+        project_id = body.get('project_id')
+        amount = body.get('amount')  # Amount in rupees
         
         # Verify project exists and belongs to user
         project = await db.projects.find_one(
-            {"project_id": payment_data.project_id},
+            {"project_id": project_id},
             {"_id": 0}
         )
         
@@ -324,46 +328,176 @@ async def create_payment(payment_data: PaymentCreate, request: Request):
         if project["client_id"] != user["user_id"]:
             raise HTTPException(status_code=403, detail="Access denied")
         
+        # Create payment record
         payment_id = f"pay_{uuid.uuid4().hex[:12]}"
-        payment = {
-            "payment_id": payment_id,
-            "project_id": payment_data.project_id,
-            "client_id": user["user_id"],
-            "amount": payment_data.amount,
-            "payment_method": payment_data.payment_method,
-            "status": PaymentStatus.PENDING.value,
-            "transaction_id": None,  # Will be set by payment gateway
-            "created_at": datetime.now(timezone.utc),
-            "updated_at": datetime.now(timezone.utc)
-        }
         
-        await db.payments.insert_one(payment)
-        
-        # TODO: Integrate with PayPal API here
-        # For now, auto-complete the payment
-        await db.payments.update_one(
-            {"payment_id": payment_id},
-            {"$set": {
+        if razorpay_client:
+            # Create Razorpay order
+            razorpay_order = razorpay_client.order.create({
+                "amount": int(amount * 100),  # Convert to paise
+                "currency": "INR",
+                "payment_capture": 1,
+                "notes": {
+                    "project_id": project_id,
+                    "payment_id": payment_id,
+                    "client_id": user["user_id"]
+                }
+            })
+            
+            # Store payment with Razorpay order ID
+            payment = {
+                "payment_id": payment_id,
+                "project_id": project_id,
+                "client_id": user["user_id"],
+                "amount": amount,
+                "payment_method": "razorpay",
+                "status": PaymentStatus.PENDING.value,
+                "razorpay_order_id": razorpay_order["id"],
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            }
+            
+            await db.payments.insert_one(payment)
+            
+            logger.info(f"Razorpay order created: {razorpay_order['id']} for payment {payment_id}")
+            
+            return {
+                "success": True,
+                "payment_id": payment_id,
+                "razorpay_order_id": razorpay_order["id"],
+                "razorpay_key_id": os.environ.get('RAZORPAY_KEY_ID'),
+                "amount": razorpay_order["amount"],
+                "currency": razorpay_order["currency"]
+            }
+        else:
+            # Mock payment (no Razorpay configured)
+            payment = {
+                "payment_id": payment_id,
+                "project_id": project_id,
+                "client_id": user["user_id"],
+                "amount": amount,
+                "payment_method": "mock",
                 "status": PaymentStatus.COMPLETED.value,
                 "transaction_id": f"mock_txn_{uuid.uuid4().hex[:8]}",
+                "created_at": datetime.now(timezone.utc),
                 "updated_at": datetime.now(timezone.utc)
-            }}
-        )
-        
-        logger.info(f"Payment created (MOCKED): {payment_id} for project {payment_data.project_id}")
-        
-        return {
-            "success": True,
-            "payment_id": payment_id,
-            "status": "completed",
-            "message": "Payment processed successfully (MOCKED)"
-        }
+            }
+            
+            await db.payments.insert_one(payment)
+            
+            logger.info(f"Mock payment created: {payment_id} for project {project_id}")
+            
+            return {
+                "success": True,
+                "payment_id": payment_id,
+                "status": "completed",
+                "message": "Payment processed successfully (MOCKED - Add Razorpay keys to use real payments)"
+            }
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Payment creation failed: {str(e)}")
+        logger.error(f"Payment order creation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/payments/verify")
+async def verify_payment(request: Request):
+    """
+    Verify Razorpay payment signature and update payment status.
+    """
+    try:
+        user = await get_current_user(request)
+        body = await request.json()
+        
+        razorpay_order_id = body.get('razorpay_order_id')
+        razorpay_payment_id = body.get('razorpay_payment_id')
+        razorpay_signature = body.get('razorpay_signature')
+        payment_id = body.get('payment_id')
+        
+        # Find payment record
+        payment = await db.payments.find_one(
+            {"payment_id": payment_id},
+            {"_id": 0}
+        )
+        
+        if not payment:
+            raise HTTPException(status_code=404, detail="Payment not found")
+        
+        if payment["client_id"] != user["user_id"]:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        if razorpay_client:
+            # Verify signature
+            try:
+                razorpay_client.utility.verify_payment_signature({
+                    'razorpay_order_id': razorpay_order_id,
+                    'razorpay_payment_id': razorpay_payment_id,
+                    'razorpay_signature': razorpay_signature
+                })
+                
+                # Update payment status
+                await db.payments.update_one(
+                    {"payment_id": payment_id},
+                    {"$set": {
+                        "status": PaymentStatus.COMPLETED.value,
+                        "razorpay_payment_id": razorpay_payment_id,
+                        "transaction_id": razorpay_payment_id,
+                        "updated_at": datetime.now(timezone.utc)
+                    }}
+                )
+                
+                logger.info(f"Payment verified successfully: {payment_id}")
+                
+                return {
+                    "success": True,
+                    "message": "Payment verified successfully",
+                    "payment_id": payment_id,
+                    "status": "completed"
+                }
+                
+            except razorpay.errors.SignatureVerificationError:
+                # Update payment as failed
+                await db.payments.update_one(
+                    {"payment_id": payment_id},
+                    {"$set": {
+                        "status": PaymentStatus.FAILED.value,
+                        "updated_at": datetime.now(timezone.utc)
+                    }}
+                )
+                raise HTTPException(status_code=400, detail="Payment verification failed")
+        else:
+            # Mock payment verification
+            await db.payments.update_one(
+                {"payment_id": payment_id},
+                {"$set": {
+                    "status": PaymentStatus.COMPLETED.value,
+                    "updated_at": datetime.now(timezone.utc)
+                }}
+            )
+            
+            return {
+                "success": True,
+                "message": "Payment verified successfully (MOCKED)",
+                "payment_id": payment_id,
+                "status": "completed"
+            }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Payment verification failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/payments")
+async def create_payment(payment_data: PaymentCreate, request: Request):
+    """
+    Legacy endpoint - redirects to create_payment_order.
+    Kept for backward compatibility.
+    """
+    user = await get_current_user(request)
+    
+    # Create order using new endpoint
+    return await create_payment_order(request)
 
 @api_router.get("/payments/{project_id}")
 async def get_payments(project_id: str, request: Request):
