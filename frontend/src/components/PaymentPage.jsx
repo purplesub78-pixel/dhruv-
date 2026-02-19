@@ -7,6 +7,7 @@ import { Label } from './ui/label';
 import { CheckCircle2, CreditCard, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useRazorpay, RazorpayOrderOptions } from 'react-razorpay';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
