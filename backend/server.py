@@ -603,20 +603,31 @@ async def get_status_checks():
 app.include_router(api_router)
 
 # CORS Configuration
-cors_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:3000')
-if cors_origins != '*':
-    cors_origins = [origin.strip() for origin in cors_origins.split(',')]
-else:
-    # When using credentials, we cannot use wildcard. Default to localhost for development.
-    cors_origins = ['http://localhost:3000']
+# For production with credentials, we need to handle origins specially
+cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# If wildcard is specified, convert it to allow any origin by using regex pattern
+# This allows credentials to work correctly
+if cors_origins_env == '*':
+    # Allow all origins with credentials by using regex pattern
+    from starlette.middleware.cors import ALL_METHODS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex='.*',  # Matches any origin
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    # Use specific origins
+    cors_origins = [origin.strip() for origin in cors_origins_env.split(',')]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
