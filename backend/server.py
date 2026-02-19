@@ -213,6 +213,7 @@ async def create_project(project_data: ProjectCreate, request: Request):
             "timeline": project_data.timeline,
             "budget": project_data.budget,
             "details": project_data.details,
+            "reference_files": project_data.reference_files if hasattr(project_data, 'reference_files') else [],
             "status": ProjectStatus.PENDING.value,
             "created_at": datetime.now(timezone.utc),
             "updated_at": datetime.now(timezone.utc),
@@ -223,6 +224,13 @@ async def create_project(project_data: ProjectCreate, request: Request):
         
         # Log project creation
         logger.info(f"Project created: {project_id} by {user['email']}")
+        
+        # Send confirmation email (non-blocking)
+        asyncio.create_task(send_email_notification(
+            to_email=project_data.email,
+            subject="Project Received - Purple Aster Studio",
+            html_content=get_project_confirmation_email(project)
+        ))
         
         # Remove MongoDB's _id field before returning
         project_response = {k: v for k, v in project.items() if k != '_id'}
