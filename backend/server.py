@@ -459,6 +459,12 @@ async def verify_payment(request: Request):
         if payment["client_id"] != user["user_id"]:
             raise HTTPException(status_code=403, detail="Access denied")
         
+        # Get project for email
+        project = await db.projects.find_one(
+            {"project_id": payment["project_id"]},
+            {"_id": 0}
+        )
+        
         if razorpay_client:
             # Verify signature
             try:
@@ -480,6 +486,15 @@ async def verify_payment(request: Request):
                 )
                 
                 logger.info(f"Payment verified successfully: {payment_id}")
+                
+                # Send payment confirmation email
+                if project:
+                    payment["transaction_id"] = razorpay_payment_id
+                    asyncio.create_task(send_email_notification(
+                        to_email=project.get("client_email", user["email"]),
+                        subject="Payment Confirmed - Purple Aster Studio",
+                        html_content=get_payment_confirmation_email(payment, project)
+                    ))
                 
                 return {
                     "success": True,
@@ -504,9 +519,19 @@ async def verify_payment(request: Request):
                 {"payment_id": payment_id},
                 {"$set": {
                     "status": PaymentStatus.COMPLETED.value,
+                    "transaction_id": f"mock_txn_{uuid.uuid4().hex[:8]}",
                     "updated_at": datetime.now(timezone.utc)
                 }}
             )
+            
+            # Send payment confirmation email (even for mock)
+            if project:
+                payment["transaction_id"] = f"mock_txn_{uuid.uuid4().hex[:8]}"
+                asyncio.create_task(send_email_notification(
+                    to_email=project.get("client_email", user["email"]),
+                    subject="Payment Confirmed - Purple Aster Studio",
+                    html_content=get_payment_confirmation_email(payment, project)
+                ))
             
             return {
                 "success": True,
