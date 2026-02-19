@@ -363,16 +363,79 @@ const ClientOnboarding = ({ user }) => {
                       <Label htmlFor="details">Project Description</Label>
                       <Textarea
                         id="details"
+                        data-testid="project-description-input"
                         placeholder="Tell us about your project, vision, and any specific requirements..."
                         rows={4}
                         value={formData.details}
                         onChange={(e) => setFormData({ ...formData, details: e.target.value })}
                       />
                     </div>
+                    
+                    {/* File Upload Section */}
+                    <div className="form-field">
+                      <Label>Reference Files (Optional)</Label>
+                      <p className="text-sm text-gray-500 mb-2">
+                        Upload images or videos for reference (max 5 files, 50MB each)
+                      </p>
+                      <div className="file-upload-area">
+                        <input
+                          type="file"
+                          id="file-upload"
+                          data-testid="file-upload-input"
+                          multiple
+                          accept="image/*,video/*"
+                          onChange={handleFileUpload}
+                          disabled={uploadingFiles || uploadedFiles.length >= 5}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="file-upload"
+                          className={`file-upload-label ${uploadingFiles ? 'uploading' : ''} ${uploadedFiles.length >= 5 ? 'disabled' : ''}`}
+                        >
+                          {uploadingFiles ? (
+                            <>
+                              <Loader2 className="w-6 h-6 animate-spin" />
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-6 h-6" />
+                              <span>Click to upload files</span>
+                            </>
+                          )}
+                        </label>
+                      </div>
+                      
+                      {/* Uploaded Files List */}
+                      {uploadedFiles.length > 0 && (
+                        <div className="uploaded-files-list">
+                          {uploadedFiles.map((file, index) => (
+                            <div key={index} className="uploaded-file-item" data-testid={`uploaded-file-${index}`}>
+                              {file.type === 'video' ? (
+                                <FileVideo className="w-4 h-4 text-purple-500" />
+                              ) : (
+                                <FileImage className="w-4 h-4 text-purple-500" />
+                              )}
+                              <span className="file-name">{file.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => removeFile(index)}
+                                className="remove-file-btn"
+                                data-testid={`remove-file-${index}`}
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
                     <div className="form-field">
                       <Label htmlFor="name">Your Name *</Label>
                       <Input
                         id="name"
+                        data-testid="client-name-input"
                         placeholder="John Doe"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -384,6 +447,7 @@ const ClientOnboarding = ({ user }) => {
                       <Input
                         id="email"
                         type="email"
+                        data-testid="client-email-input"
                         placeholder="john@example.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -395,6 +459,7 @@ const ClientOnboarding = ({ user }) => {
                       <Input
                         id="phone"
                         type="tel"
+                        data-testid="client-phone-input"
                         placeholder="+91 98765 43210"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -403,6 +468,7 @@ const ClientOnboarding = ({ user }) => {
                     <div className="form-field checkbox-field">
                       <Checkbox
                         id="terms"
+                        data-testid="terms-checkbox"
                         checked={formData.termsAccepted}
                         onCheckedChange={(checked) => setFormData({ ...formData, termsAccepted: checked })}
                       />
