@@ -687,15 +687,167 @@
 .project-row,
 .user-row {
   border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
 }
 
-.project-row-content,
-.user-row-content {
+.project-row:hover {
+  border-color: #7C3AED;
+}
+
+.project-row-content {
+  padding: 0;
+}
+
+.project-main-info {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.project-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+}
+
+.project-client-info h4 {
+  font-weight: 600;
+  color: #0A0A0A;
+}
+
+.project-services {
+  font-size: 0.85rem;
+  color: #737373;
+  margin-top: 0.25rem;
+}
+
+.expand-icon {
+  width: 20px;
+  height: 20px;
+  color: #737373;
+}
+
+.project-expanded {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid #E5E7EB;
+  background: #F9FAFB;
+}
+
+.project-details-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.project-details-grid .detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #737373;
+  background: none;
+  padding: 0;
+}
+
+.detail-icon {
+  width: 16px;
+  height: 16px;
+  color: #7C3AED;
+}
+
+.project-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.project-meta p {
+  color: #737373;
+}
+
+.project-meta strong {
+  color: #0A0A0A;
+}
+
+.project-description {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.project-description strong {
+  color: #0A0A0A;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.project-description p {
+  color: #737373;
+}
+
+.project-talents {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.project-talents strong {
+  color: #0A0A0A;
+  margin-right: 0.5rem;
+}
+
+.assigned-talents-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.talent-badge {
+  background: #7C3AED !important;
+  color: white !important;
+}
+
+.no-talents {
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+.project-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #E5E7EB;
+}
+
+.user-row-content {
+  display: flex;
+  align-items: center;
   padding: 1rem;
   gap: 1rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-info h4 {
+  font-weight: 600;
+  color: #0A0A0A;
+}
+
+.user-info p {
+  font-size: 0.85rem;
+  color: #737373;
 }
 
 .status-select {
@@ -705,10 +857,134 @@
   font-size: 0.9rem;
 }
 
-.user-row-content img {
-  width: 40px;
-  height: 40px;
+/* Talents Grid */
+.talents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.talent-card {
+  text-align: center;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
+}
+
+.talent-card:hover {
+  border-color: #7C3AED;
+  transform: translateY(-2px);
+}
+
+.talent-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.talent-avatar {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  object-fit: cover;
+}
+
+.talent-card h4 {
+  font-weight: 600;
+  color: #0A0A0A;
+}
+
+.talent-email {
+  font-size: 0.85rem;
+  color: #737373;
+}
+
+/* Assign Modal */
+.assign-modal {
+  max-width: 500px;
+}
+
+.assign-modal-content {
+  padding: 1rem 0;
+}
+
+.project-summary {
+  background: #F9FAFB;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.project-summary p {
+  font-size: 0.9rem;
+  color: #737373;
+}
+
+.project-summary strong {
+  color: #0A0A0A;
+}
+
+.selection-label {
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #0A0A0A;
+}
+
+.no-talents-message {
+  color: #9CA3AF;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+.talents-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.talent-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.talent-checkbox-item:hover {
+  background: #F9FAFB;
+}
+
+.talent-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.talent-mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.talent-checkbox-label .talent-name {
+  display: block;
+  font-weight: 500;
+  color: #0A0A0A;
+}
+
+.talent-checkbox-label .talent-email-small {
+  display: block;
+  font-size: 0.8rem;
+  color: #9CA3AF;
 }
 
 /* Talent Dashboard */
