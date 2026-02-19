@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
-import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, Upload, X, FileVideo, FileImage, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 
