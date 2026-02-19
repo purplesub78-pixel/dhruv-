@@ -14,6 +14,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const PaymentPage = ({ user }) => {
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const { Razorpay } = useRazorpay();
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState(null);
   const [loadingProject, setLoadingProject] = useState(true);
@@ -33,7 +34,6 @@ const PaymentPage = ({ user }) => {
 
       if (response.data.success) {
         setProject(response.data.project);
-        // Suggest payment based on budget range
         const budgetSuggestion = getSuggestedAmount(response.data.project.budget);
         setAmount(budgetSuggestion);
       }
@@ -67,22 +67,73 @@ const PaymentPage = ({ user }) => {
     setLoading(true);
 
     try {
-      // Mock payment processing
-      const response = await axios.post(
-        `${BACKEND_URL}/api/payments`,
+      // Create Razorpay order
+      const orderResponse = await axios.post(
+        `${BACKEND_URL}/api/payments/create-order`,
         {
           project_id: projectId,
-          amount: parseFloat(amount),
-          payment_method: 'paypal'
+          amount: parseFloat(amount)
         },
         { withCredentials: true }
       );
 
-      if (response.data.success) {
+      if (orderResponse.data.razorpay_order_id) {
+        // Real Razorpay payment
+        const options = {
+          key: orderResponse.data.razorpay_key_id,
+          amount: orderResponse.data.amount,
+          currency: orderResponse.data.currency,
+          name: 'Purple Aster Studio',
+          description: `Payment for ${project.services.join(', ')}`,
+          order_id: orderResponse.data.razorpay_order_id,
+          handler: async function (response) {
+            try {
+              // Verify payment on backend
+              const verifyResponse = await axios.post(
+                `${BACKEND_URL}/api/payments/verify`,
+                {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  payment_id: orderResponse.data.payment_id
+                },
+                { withCredentials: true }
+              );
+
+              if (verifyResponse.data.success) {
+                setPaymentSuccess(true);
+                toast.success('Payment successful!');
+                setTimeout(() => {
+                  navigate('/dashboard');
+                }, 2000);
+              }
+            } catch (error) {
+              console.error('Payment verification error:', error);
+              toast.error('Payment verification failed. Please contact support.');
+            }
+          },
+          prefill: {
+            name: user?.name || '',
+            email: user?.email || '',
+            contact: project?.client_phone || ''
+          },
+          theme: {
+            color: '#7C3AED'
+          }
+        };
+
+        const razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
+        
+        razorpayInstance.on('payment.failed', function (response) {
+          toast.error('Payment failed. Please try again.');
+          console.error('Payment failed:', response.error);
+        });
+        
+      } else {
+        // Mock payment (Razorpay not configured)
         setPaymentSuccess(true);
         toast.success('Payment processed successfully! (MOCKED)');
-        
-        // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           navigate('/dashboard');
         }, 2000);
