@@ -256,11 +256,11 @@ const PaymentPage = ({ user }) => {
                   <Label>Payment Method</Label>
                   <div className="payment-method-option selected">
                     <CreditCard className="h-5 w-5" />
-                    <span>PayPal (MOCKED)</span>
+                    <span>Razorpay (Cards, UPI, Netbanking, Wallets)</span>
                   </div>
                   <p className="payment-note">
-                    Note: This is a mock payment for testing. No actual transaction will occur.
-                    Real PayPal integration will be added soon.
+                    Secure payment powered by Razorpay. 
+                    {!project?.razorpay_configured && " Note: Using test mode - add Razorpay keys in .env for live payments."}
                   </p>
                 </div>
 
