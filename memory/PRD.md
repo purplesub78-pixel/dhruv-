@@ -63,6 +63,14 @@ Create a premium video production studio website with a complete client manageme
 - Payment confirmation emails on success
 - Non-blocking async email sending
 - Professional HTML email templates with Purple Aster branding
+- Note: In test mode, only sends to verified email addresses
+
+### Phase 4: Admin Dashboard Enhancement (Completed - Feb 19, 2025)
+- Expandable project rows with full details
+- Talent assignment modal
+- Talent pool management tab
+- Status update functionality
+- New endpoints: `/api/admin/talents`, `/api/projects/{id}/assign`
 
 ---
 
