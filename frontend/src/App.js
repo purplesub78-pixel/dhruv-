@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import "./App.css";
+import "./pages.css";
 import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
