@@ -277,7 +277,7 @@ const PaymentPage = ({ user }) => {
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Process Payment (MOCK)
+                      Pay with Razorpay
                     </>
                   )}
                 </Button>
