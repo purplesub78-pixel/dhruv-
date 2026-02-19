@@ -36,6 +36,13 @@ db = client[os.environ['DB_NAME']]
 # Set database for auth module
 auth.set_database(db)
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 # Razorpay Client
 razorpay_client = None
 try:
@@ -55,13 +62,6 @@ app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 # ============================================================================
 # HEALTH CHECK ENDPOINT (Required for deployment)
