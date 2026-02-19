@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import List
 import uuid
+import razorpay
 
 # Import models and auth helpers
 from models import (
@@ -34,6 +35,20 @@ db = client[os.environ['DB_NAME']]
 
 # Set database for auth module
 auth.set_database(db)
+
+# Razorpay Client
+razorpay_client = None
+try:
+    razorpay_key_id = os.environ.get('RAZORPAY_KEY_ID', '')
+    razorpay_key_secret = os.environ.get('RAZORPAY_KEY_SECRET', '')
+    if razorpay_key_id and razorpay_key_secret and not razorpay_key_id.startswith('your_'):
+        razorpay_client = razorpay.Client(auth=(razorpay_key_id, razorpay_key_secret))
+        logger.info("Razorpay client initialized successfully")
+    else:
+        logger.warning("Razorpay credentials not configured - using mock payments")
+except Exception as e:
+    logger.error(f"Failed to initialize Razorpay client: {str(e)}")
+    razorpay_client = None
 
 # Create the main app without a prefix
 app = FastAPI()
